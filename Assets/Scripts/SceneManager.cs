@@ -10,10 +10,12 @@ public class SceneManager : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
     }
+    //Load scene via scene number
     public void LoadScene(int scene)
     {
         sceneManager.LoadScene(scene);
     }
+    //Load scene via scene name
     public void LoadScene(string scene)
     {
         sceneManager.LoadScene(scene);

@@ -12,7 +12,7 @@ public class NpcController : MonoBehaviour
     Transform[] patrolRoute;
     int currentLocation;
     [SerializeField]
-    GameObject weapon;
+    Weapon weapon;
 
     [Header("Attacking Information")]
     [SerializeField]
@@ -24,7 +24,7 @@ public class NpcController : MonoBehaviour
 
     [Header("Npc Stats")]
     [SerializeField]
-    float health;
+    public float health;
 
     public enum AttackState { attack, idle, patrol};
     public AttackState attackState = AttackState.idle;
@@ -38,6 +38,8 @@ public class NpcController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (health <= 0)
+            Die();
         timer += Time.deltaTime;
 
         switch (attackState)
@@ -76,17 +78,29 @@ public class NpcController : MonoBehaviour
                     }
                 }
                 break;
-
         }
     }
 
+    void Die()
+    {
+        animator.SetTrigger("Die");
+    }
     void Attack()
     {
         if (timer > timePerAttack)
         {
-            animator.ResetTrigger("Attack");
-            animator.SetTrigger("Attack");
+            animator.ResetTrigger("attack");
+            animator.SetTrigger("attack");
             timer = 0;
         }
+    }
+
+    public void TakeHit(float damage)
+    {
+        animator.ResetTrigger("takeHit");
+        animator.SetTrigger("takeHit");
+
+        health -= damage;
+        timer = 0;
     }
 }

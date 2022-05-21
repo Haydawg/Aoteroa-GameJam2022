@@ -18,6 +18,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float moveSpeed;
 
+    [SerializeField]
+    EquipableItem[] equipableItems;
+    public EquipableItem currentItem;
+    public Transform itemHandTransform;
+
     [Header("Value use rates")]
     [SerializeField]
     float staminaUseRate = 10;
@@ -38,11 +43,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float blockCost;
 
+
     float distToGround;
     float fallDamage;
 
     private CharacterController controller;
     private Camera camera;
+    private Animator anim;
     private Vector3 playerVelocity;
     private bool groundedPlayer;
     private float jumpHeight = 1.0f;
@@ -61,6 +68,7 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         camera = FindObjectOfType<Camera>();
         distToGround = controller.bounds.extents.y;
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -73,6 +81,28 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && groundedPlayer)
         {
             Jump();
+        }
+
+        // change current equiped item
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            equipableItems[1].Unequip();
+            equipableItems[0].Equip();
+
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            equipableItems[0].Unequip();
+            equipableItems[1].Equip();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            equipableItems[0].Unequip();
+            equipableItems[1].Unequip();
+        }
+        if(Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            currentItem.Attack();
         }
     }
 
@@ -153,9 +183,11 @@ public class PlayerController : MonoBehaviour
 
     void Gravity()
     {
+        //player falls with gravity
         playerVelocity.y += gravityValue * Time.deltaTime;
-
         controller.Move(playerVelocity * Time.deltaTime);
+
+        // if player falls to fast take damage
         if (playerVelocity.y < -safeFallLimit)
         {
             fallDamage = playerVelocity.y;
@@ -175,7 +207,7 @@ public class PlayerController : MonoBehaviour
     {
         if(stamina > attackCost)
         {
-            //do stuff
+            currentItem.Attack();
         }
     }
 
