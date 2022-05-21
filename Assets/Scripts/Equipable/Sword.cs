@@ -7,18 +7,21 @@ public class Sword : EquipableItem
     [SerializeField]
     Weapon weapon;
 
-
-    public override void Equip()
+    public override void Draw()
     {
         player.currentItem = this;
-        isEquiped = true;
+        player.anim.ResetTrigger("DrawSword");
+        player.anim.SetTrigger("DrawSword");
+
+    }
+    public override void Sheath()
+    {
+
+        player.anim.ResetTrigger("SheathSword");
+        player.anim.SetTrigger("SheathSword");
+
     }
 
-    public override void Unequip()
-    {
-        player.currentItem = null;
-        isEquiped = false;
-    }
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.GetComponent<NpcController>())

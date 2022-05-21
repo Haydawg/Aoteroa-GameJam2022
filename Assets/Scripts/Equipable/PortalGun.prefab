@@ -94,4 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73db814db3ac28d44a1355920541b734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   isEquiped: 0
+  portalReady: 0
+  portalPrefab: {fileID: 8204741262276422023, guid: cd438a9f4e365c94e81cada305b1fea3, type: 3}

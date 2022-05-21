@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: c088944c00039aa499f14d16c8aaa311
+guid: 197eaf6d7db46e14e9108a676eb7592c
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: DrawGun
+    second: SheathSword
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: DrawGun
+      name: SheathSword
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 120
+      lastFrame: 89
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -59,8 +59,8 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.33424744
-        functionName: EquipGun
+      - time: 0.43583333
+        functionName: UnequipSword
         data: 
         objectReferenceParameter: {fileID: 3593359983920842537, guid: 4e45c875d4081984ca0d4d66774e8825, type: 3}
         floatParameter: 0

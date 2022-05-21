@@ -4,5 +4,23 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MenuScene.unity
+    guid: 7be466affd1d34f4f874d172cad08de3
+  - enabled: 1
+    path: Assets/Scenes/CyberpunkAllyScene.unity
+    guid: 1821e023968abe2448e257f72e5fb649
+  - enabled: 1
+    path: Assets/Scenes/PlainScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/CowboyRanchScene.unity
+    guid: 787946e81eba7a745af77bea39e6db5c
+  - enabled: 1
+    path: Assets/Scenes/CityStreetScene.unity
+    guid: c88d2e2c608f7e1419dcc2bb66c87bea
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: db74ccaa95532f445b23f0b2234a85f3
   m_configObjects: {}

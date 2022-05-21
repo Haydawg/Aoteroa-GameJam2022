@@ -79,6 +79,8 @@ public class NpcController : MonoBehaviour
                 }
                 break;
         }
+
+        animator.SetFloat("Speed", agent.velocity.z);
     }
 
     void Die()

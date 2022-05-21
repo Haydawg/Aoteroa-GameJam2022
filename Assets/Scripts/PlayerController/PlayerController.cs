@@ -49,7 +49,6 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController controller;
     private Camera camera;
-    private Animator anim;
     private Vector3 playerVelocity;
     private bool groundedPlayer;
     private float jumpHeight = 1.0f;
@@ -59,8 +58,13 @@ public class PlayerController : MonoBehaviour
     public Image healthBar;
     public Image staminaBar;
 
+    public Animator anim;
+    
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        GameObject.DontDestroyOnLoad(this.gameObject);
+    }
     void Start()
     {
         health = maxHealth;
@@ -73,6 +77,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(currentItem);
         //healthBar.fillAmount = health / maxHealth;
         //staminaBar.fillAmount = stamina / maxStamina;
         groundedPlayer = IsGrounded();
@@ -86,24 +91,58 @@ public class PlayerController : MonoBehaviour
         // change current equiped item
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
-            equipableItems[1].Unequip();
-            equipableItems[0].Equip();
+            if (currentItem == equipableItems[1])
+                equipableItems[1].Sheath();
+            else if (currentItem != equipableItems[0])
+                equipableItems[0].Draw();
 
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            equipableItems[0].Unequip();
-            equipableItems[1].Equip();
+            if (currentItem == equipableItems[0])
+                equipableItems[0].Sheath();
+            equipableItems[1].Draw();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            equipableItems[0].Unequip();
-            equipableItems[1].Unequip();
+            if (currentItem == equipableItems[0])
+                equipableItems[0].Sheath();
+            equipableItems[1].Sheath();
         }
         if(Input.GetKeyDown(KeyCode.Mouse0))
         {
-            currentItem.Attack();
+            if(currentItem != null)
+                currentItem.Attack();
         }
+
+        anim.SetBool("HasEquiped", currentItem != null);
+        if (health <= 0)
+        {
+            anim.ResetTrigger("Die");
+            anim.SetTrigger("Die");
+        }
+    }
+
+    void EquipGun()
+    {
+        currentItem = equipableItems[0];
+        currentItem.Equip();
+    }
+    void EquipSword()
+    {
+        currentItem = equipableItems[1];
+        currentItem.Equip();
+    }
+
+    void UnequipGun()
+    {
+        currentItem = equipableItems[0];
+        currentItem.Unequip();
+    }
+    void UnequipSword()
+    {
+        currentItem = equipableItems[1];
+        currentItem.Unequip();
     }
 
     void Movement()
@@ -170,12 +209,17 @@ public class PlayerController : MonoBehaviour
         }
 
         controller.Move(move.normalized * Time.deltaTime * moveSpeed);
+        anim.SetFloat("Speed", moveSpeed);
+        anim.SetBool("Grounded", groundedPlayer);
+
     }
 
     void Jump()
     {
         if (stamina > 20)
         {
+            anim.ResetTrigger("Jump");
+            anim.SetTrigger("Jump");
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
             stamina -= 20;
         }
@@ -185,6 +229,11 @@ public class PlayerController : MonoBehaviour
     {
         //player falls with gravity
         playerVelocity.y += gravityValue * Time.deltaTime;
+
+        if (playerVelocity.y < -1)
+            anim.SetBool("FreeFall", true);
+        else
+            anim.SetBool("FreeFall", false);
         controller.Move(playerVelocity * Time.deltaTime);
 
         // if player falls to fast take damage
@@ -217,5 +266,9 @@ public class PlayerController : MonoBehaviour
         {
             //do stuff
         }
+    }
+    void TakeHit()
+    {
+
     }
 }

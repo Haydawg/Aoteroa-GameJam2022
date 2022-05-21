@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Portal : MonoBehaviour
 {
-    SceneManager sceneManager;
+    LevelManager levelManager;
     // Start is called before the first frame update
     void Start()
     {
-        
+        levelManager = FindObjectOfType<LevelManager>();
     }
 
     // Update is called once per frame
@@ -16,11 +16,11 @@ public class Portal : MonoBehaviour
     {
         
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.GetComponent<PlayerController>())
+        if(other.gameObject.GetComponent<PlayerController>())
         {
-            sceneManager.LoadScene("Cyberpunk Ally Scene");
+            levelManager.LoadScene(0);
         }
     }
 }

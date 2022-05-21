@@ -6,9 +6,14 @@ public class CameraController : MonoBehaviour
 
     public float turnSpeed = 10.0f;
 
-    public float height = 1f;
-    public float distance = 2f;
+    public float height = 5f;
+    public float distance = 4f;
     Vector3 offset;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     // Start is called before the first frame update
     void Start()
     {
