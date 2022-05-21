@@ -15,4 +15,4 @@ MonoBehaviour:
   weaponName: Sword
   era: 0
   damage: 10
-  weaponPrefab: {fileID: 393322034202210152, guid: 530c34fc866e36a4ca7d3aa2d92115b6, type: 3}
+  weaponPrefab: {fileID: 100000, guid: 925369924deda464aad5f6f3226e02c2, type: 3}

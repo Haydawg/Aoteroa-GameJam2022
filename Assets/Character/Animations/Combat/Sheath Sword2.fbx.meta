@@ -62,7 +62,7 @@ ModelImporter:
       - time: 0.43583333
         functionName: UnequipSword
         data: 
-        objectReferenceParameter: {fileID: 3593359983920842537, guid: 4e45c875d4081984ca0d4d66774e8825, type: 3}
+        objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0

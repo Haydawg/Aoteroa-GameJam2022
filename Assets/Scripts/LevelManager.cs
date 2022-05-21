@@ -11,6 +11,7 @@ public class LevelManager : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
     }
+    
     //Load scene via scene number
     public void LoadScene(int scene)
     {
@@ -27,4 +28,5 @@ public class LevelManager : MonoBehaviour
             if (player = GameObject.FindGameObjectWithTag("Player"))
                 player.transform.position = startPos.transform.position;
     }
+    
 }

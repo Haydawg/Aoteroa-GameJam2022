@@ -22,8 +22,15 @@ public class Sword : EquipableItem
 
     }
 
+    public override void Attack()
+    {
+        player.anim.ResetTrigger("Attack");
+        player.anim.SetTrigger("Attack");
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.name);
         if(collision.gameObject.GetComponent<NpcController>())
         {
             NpcController npc = collision.gameObject.GetComponent<NpcController>();

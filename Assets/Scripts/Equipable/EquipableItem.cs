@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EquipableItem : MonoBehaviour
 {
-    public PlayerController player;
+    public Character player;
     public bool isEquiped;
     public MeshRenderer mesh;
 
@@ -12,7 +12,7 @@ public class EquipableItem : MonoBehaviour
     {
         mesh = GetComponentInChildren<MeshRenderer>();
         isEquiped = false;
-        player = FindObjectOfType<PlayerController>();
+        
        
     }
 

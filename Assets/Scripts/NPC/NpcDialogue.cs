@@ -20,7 +20,7 @@ public class NpcDialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        displayed.text = dialogue[currentDialogue];
+        //displayed.text = dialogue[currentDialogue];
     }
     public void NextDialogue()
     {

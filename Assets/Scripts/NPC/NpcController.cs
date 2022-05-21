@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NpcController : MonoBehaviour
+public class NpcController : Character
 {
     Transform player;
     NavMeshAgent agent;
-    Animator animator;
+
     [SerializeField]
     Transform[] patrolRoute;
     int currentLocation;
-    [SerializeField]
-    Weapon weapon;
+
 
     [Header("Attacking Information")]
     [SerializeField]
@@ -31,6 +30,7 @@ public class NpcController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
         player = FindObjectOfType<PlayerController>().transform;
         currentLocation = 0;
     }
@@ -44,31 +44,44 @@ public class NpcController : MonoBehaviour
 
         switch (attackState)
         {
+
             case AttackState.attack:
+                currentItem = equipableItems[0];
+                equipableItems[0].Draw();
+                agent.isStopped = false;
                 timer += Time.deltaTime;
                 transform.LookAt(player);
                 if (Vector3.Distance(transform.position, player.position) > attackRange)
                 {
-                    animator.SetBool("isRunning", true);
+
+                    agent.isStopped = false;
+
+                    agent.stoppingDistance = attackRange;
+                    agent.speed = 10;
                     agent.SetDestination(player.position);
                 }
                 else
                 {
-                    animator.SetBool("isRunning", false);
+                    agent.isStopped = true;
                     Attack();
                 }
                 break;
             case AttackState.idle:
+                if (currentItem != null)
+                    currentItem.Sheath();
                 agent.isStopped = true;
                 break;
             case AttackState.patrol:
+                if (currentItem != null)
+                    currentItem.Sheath();
+                agent.isStopped = false;
                 if (Vector3.Distance(transform.position, patrolRoute[currentLocation].position) > 1)
                 {
                     agent.SetDestination(patrolRoute[currentLocation].position);
                 }
                 else
                 {
-                    if(currentLocation < patrolRoute.Length)
+                    if(currentLocation < patrolRoute.Length - 1)
                     {
                         currentLocation++;
                     }
@@ -79,28 +92,38 @@ public class NpcController : MonoBehaviour
                 }
                 break;
         }
+        anim.SetBool("Idle", agent.isStopped);
+        anim.SetFloat("Speed", agent.speed);
+    }
+    void EquipSword()
+    {
+        currentItem = equipableItems[0];
+        currentItem.Equip();
+    }
 
-        animator.SetFloat("Speed", agent.velocity.z);
+    void UnequipSword()
+    {
+        currentItem = equipableItems[0];
+        currentItem.Unequip();
     }
 
     void Die()
     {
-        animator.SetTrigger("Die");
+        anim.SetTrigger("Die");
     }
     void Attack()
     {
         if (timer > timePerAttack)
         {
-            animator.ResetTrigger("attack");
-            animator.SetTrigger("attack");
+            currentItem.Attack();
             timer = 0;
         }
     }
 
     public void TakeHit(float damage)
     {
-        animator.ResetTrigger("takeHit");
-        animator.SetTrigger("takeHit");
+        anim.ResetTrigger("takeHit");
+        anim.SetTrigger("takeHit");
 
         health -= damage;
         timer = 0;

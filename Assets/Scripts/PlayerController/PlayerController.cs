@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Character
 {
     [Header ("Player Stats")]
     [SerializeField]
@@ -18,10 +18,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float moveSpeed;
 
-    [SerializeField]
-    EquipableItem[] equipableItems;
-    public EquipableItem currentItem;
-    public Transform itemHandTransform;
 
     [Header("Value use rates")]
     [SerializeField]
@@ -58,8 +54,7 @@ public class PlayerController : MonoBehaviour
     public Image healthBar;
     public Image staminaBar;
 
-    public Animator anim;
-    
+
 
     private void Awake()
     {
@@ -72,12 +67,11 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         camera = FindObjectOfType<Camera>();
         distToGround = controller.bounds.extents.y;
-        anim = GetComponent<Animator>();
+
     }
 
     private void Update()
     {
-        Debug.Log(currentItem);
         //healthBar.fillAmount = health / maxHealth;
         //staminaBar.fillAmount = stamina / maxStamina;
         groundedPlayer = IsGrounded();
@@ -115,7 +109,6 @@ public class PlayerController : MonoBehaviour
                 currentItem.Attack();
         }
 
-        anim.SetBool("HasEquiped", currentItem != null);
         if (health <= 0)
         {
             anim.ResetTrigger("Die");
@@ -208,8 +201,11 @@ public class PlayerController : MonoBehaviour
                 moveSpeed -= acceleration;
         }
 
+
         controller.Move(move.normalized * Time.deltaTime * moveSpeed);
-        anim.SetFloat("Speed", moveSpeed);
+        anim.SetBool("Idle", !isMoving);
+        anim.SetFloat("Speed", (int)(Input.GetAxis("Vertical") * moveSpeed));
+        anim.SetFloat("Strafe", Input.GetAxis("Horizontal"));
         anim.SetBool("Grounded", groundedPlayer);
 
     }
