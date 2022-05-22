@@ -60,7 +60,7 @@ public class NpcController : Character
                         agent.isStopped = false;
 
                         agent.stoppingDistance = attackRange;
-                        agent.speed = 10;
+                        agent.speed = 5;
                         agent.SetDestination(player.position);
                     }
                     else
