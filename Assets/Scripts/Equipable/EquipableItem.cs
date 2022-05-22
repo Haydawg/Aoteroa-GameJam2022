@@ -7,10 +7,11 @@ public class EquipableItem : MonoBehaviour
     public Character player;
     public bool isEquiped;
     public MeshRenderer mesh;
+    public GameObject parent;
+    
 
     private void Start()
     {
-        mesh = GetComponentInChildren<MeshRenderer>();
         isEquiped = false;
         
        
@@ -18,8 +19,8 @@ public class EquipableItem : MonoBehaviour
 
     private void Update()
     {
-        transform.position = player.itemHandTransform.position;
-        transform.rotation = player.itemHandTransform.rotation;
+        parent.transform.position = player.itemHandTransform.position;
+        parent.transform.rotation = player.itemHandTransform.rotation;
         mesh.enabled = isEquiped;
     }
 

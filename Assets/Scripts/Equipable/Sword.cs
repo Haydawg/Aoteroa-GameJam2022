@@ -7,6 +7,11 @@ public class Sword : EquipableItem
     [SerializeField]
     Weapon weapon;
 
+    private void Start()
+    {
+        
+        Physics.IgnoreCollision(GetComponent<Collider>(), player.gameObject.GetComponent<Collider>());
+    }
     public override void Draw()
     {
         player.currentItem = this;
@@ -24,18 +29,31 @@ public class Sword : EquipableItem
 
     public override void Attack()
     {
-        player.anim.ResetTrigger("Attack");
-        player.anim.SetTrigger("Attack");
+        int random = Random.Range(0, 9);
+
+        if (random % 2 == 0)
+        {
+            player.anim.ResetTrigger("Attack");
+            player.anim.SetTrigger("Attack");
+        }
+        else
+        {
+            player.anim.ResetTrigger("Attack2");
+            player.anim.SetTrigger("Attack2");
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
-        if(collision.gameObject.GetComponent<NpcController>())
+        Debug.Log("hit");
+        if(collision.gameObject.GetComponent<Character>())
         {
-            NpcController npc = collision.gameObject.GetComponent<NpcController>();
-            npc.TakeHit(weapon.damage);
-
+            Debug.Log(collision.gameObject.name);
+            //if (collision.gameObject != this.transform.parent)
+        
+            Character character = collision.gameObject.GetComponent<Character>();
+            character.TakeHit(weapon.damage);
+        
         }
     }
 }
