@@ -271,7 +271,7 @@ public class PlayerController : Character
 
     void Attack()
     {
-        if(stamina > attackCost)
+        if (stamina > attackCost)
         {
             currentItem.Attack();
             stamina -= attackCost;

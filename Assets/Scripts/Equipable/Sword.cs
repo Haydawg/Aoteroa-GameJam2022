@@ -6,11 +6,13 @@ public class Sword : EquipableItem
 {
     [SerializeField]
     Weapon weapon;
+    private AudioSource audio;
 
     private void Start()
     {
         
         Physics.IgnoreCollision(GetComponent<Collider>(), player.gameObject.GetComponent<Collider>());
+        audio = GetComponent<AudioSource>();
     }
     public override void Draw()
     {
@@ -53,7 +55,8 @@ public class Sword : EquipableItem
         
             Character character = collision.gameObject.GetComponent<Character>();
             character.TakeHit(weapon.damage);
-        
+
+            audio.Play();
         }
     }
 }
