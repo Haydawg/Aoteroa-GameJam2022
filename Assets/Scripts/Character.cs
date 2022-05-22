@@ -25,4 +25,8 @@ public class Character : MonoBehaviour
     {
         
     }
+    public virtual void TakeHit(float damage)
+    {
+
+    }
 }

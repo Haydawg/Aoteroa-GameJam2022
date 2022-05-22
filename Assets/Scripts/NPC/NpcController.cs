@@ -25,6 +25,7 @@ public class NpcController : Character
     [SerializeField]
     public float health;
 
+    bool dead = false;
     public enum AttackState { attack, idle, patrol};
     public AttackState attackState = AttackState.idle;
     // Start is called before the first frame update
@@ -40,60 +41,63 @@ public class NpcController : Character
     {
         if (health <= 0)
             Die();
-        timer += Time.deltaTime;
-
-        switch (attackState)
+        else
         {
+            timer += Time.deltaTime;
 
-            case AttackState.attack:
-                currentItem = equipableItems[0];
-                equipableItems[0].Draw();
-                agent.isStopped = false;
-                timer += Time.deltaTime;
-                transform.LookAt(player);
-                if (Vector3.Distance(transform.position, player.position) > attackRange)
-                {
+            switch (attackState)
+            {
 
+                case AttackState.attack:
+                    currentItem = equipableItems[0];
+                    equipableItems[0].Draw();
                     agent.isStopped = false;
-
-                    agent.stoppingDistance = attackRange;
-                    agent.speed = 10;
-                    agent.SetDestination(player.position);
-                }
-                else
-                {
-                    agent.isStopped = true;
-                    Attack();
-                }
-                break;
-            case AttackState.idle:
-                if (currentItem != null)
-                    currentItem.Sheath();
-                agent.isStopped = true;
-                break;
-            case AttackState.patrol:
-                if (currentItem != null)
-                    currentItem.Sheath();
-                agent.isStopped = false;
-                if (Vector3.Distance(transform.position, patrolRoute[currentLocation].position) > 1)
-                {
-                    agent.SetDestination(patrolRoute[currentLocation].position);
-                }
-                else
-                {
-                    if(currentLocation < patrolRoute.Length - 1)
+                    timer += Time.deltaTime;
+                    transform.LookAt(new Vector3(player.transform.position.x, transform.position.y , player.transform.position.z));
+                    if (Vector3.Distance(transform.position, player.position) > attackRange + 0.1)
                     {
-                        currentLocation++;
+
+                        agent.isStopped = false;
+
+                        agent.stoppingDistance = attackRange;
+                        agent.speed = 10;
+                        agent.SetDestination(player.position);
                     }
                     else
                     {
-                        currentLocation = 0;
+                        agent.isStopped = true;
+                        Attack();
                     }
-                }
-                break;
+                    break;
+                case AttackState.idle:
+                    if (currentItem != null)
+                        currentItem.Sheath();
+                    agent.isStopped = true;
+                    break;
+                case AttackState.patrol:
+                    if (currentItem != null)
+                        currentItem.Sheath();
+                    agent.isStopped = false;
+                    if (Vector3.Distance(transform.position, patrolRoute[currentLocation].position) > 1)
+                    {
+                        agent.SetDestination(patrolRoute[currentLocation].position);
+                    }
+                    else
+                    {
+                        if (currentLocation < patrolRoute.Length - 1)
+                        {
+                            currentLocation++;
+                        }
+                        else
+                        {
+                            currentLocation = 0;
+                        }
+                    }
+                    break;
+            }
+            anim.SetBool("Idle", agent.isStopped);
+            anim.SetFloat("Speed", agent.speed);
         }
-        anim.SetBool("Idle", agent.isStopped);
-        anim.SetFloat("Speed", agent.speed);
     }
     void EquipSword()
     {
@@ -109,7 +113,12 @@ public class NpcController : Character
 
     void Die()
     {
-        anim.SetTrigger("Die");
+        if (!dead)
+        {
+            anim.ResetTrigger("Die");
+            anim.SetTrigger("Die");
+            dead = true;
+        }
     }
     void Attack()
     {
@@ -120,10 +129,10 @@ public class NpcController : Character
         }
     }
 
-    public void TakeHit(float damage)
+    public override void TakeHit(float damage)
     {
-        anim.ResetTrigger("takeHit");
-        anim.SetTrigger("takeHit");
+        anim.ResetTrigger("TakeHit");
+        anim.SetTrigger("TakeHit");
 
         health -= damage;
         timer = 0;

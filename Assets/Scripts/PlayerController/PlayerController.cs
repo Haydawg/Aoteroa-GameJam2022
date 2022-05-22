@@ -2,19 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.UI;
 
 public class PlayerController : Character
 {
     [Header ("Player Stats")]
     [SerializeField]
-    float maxHealth = 100;
+    public float maxHealth = 100;
     [SerializeField]
-    float health;
+    public float health;
     [SerializeField]
-    float maxStamina;
+    public float maxStamina;
     [SerializeField]
-    float stamina;
+    public float stamina;
     [SerializeField]
     float moveSpeed;
 
@@ -39,6 +38,10 @@ public class PlayerController : Character
     [SerializeField]
     float blockCost;
 
+    [SerializeField]
+    float timePerAttack;
+
+    float timer;
 
     float distToGround;
     float fallDamage;
@@ -50,11 +53,14 @@ public class PlayerController : Character
     private float jumpHeight = 1.0f;
     private float gravityValue = -9.81f;
 
-    [Header("UI elements")]
-    public Image healthBar;
-    public Image staminaBar;
+    bool isRunning = false;
+    bool isMoving;
+    bool canRun = true;
+    bool isBlocking = false;
 
-
+    private AudioSource audio;
+    [SerializeField]
+    AudioClip[] clips;
 
     private void Awake()
     {
@@ -67,53 +73,59 @@ public class PlayerController : Character
         controller = GetComponent<CharacterController>();
         camera = FindObjectOfType<Camera>();
         distToGround = controller.bounds.extents.y;
-
+        audio = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        //healthBar.fillAmount = health / maxHealth;
-        //staminaBar.fillAmount = stamina / maxStamina;
-        groundedPlayer = IsGrounded();
-        Gravity();
-        Movement();
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
-        {
-            Jump();
-        }
-
-        // change current equiped item
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (currentItem == equipableItems[1])
-                equipableItems[1].Sheath();
-            else if (currentItem != equipableItems[0])
-                equipableItems[0].Draw();
-
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if (currentItem == equipableItems[0])
-                equipableItems[0].Sheath();
-            equipableItems[1].Draw();
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            if (currentItem == equipableItems[0])
-                equipableItems[0].Sheath();
-            equipableItems[1].Sheath();
-        }
-        if(Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            if(currentItem != null)
-                currentItem.Attack();
-        }
-
         if (health <= 0)
         {
             anim.ResetTrigger("Die");
             anim.SetTrigger("Die");
         }
+        else
+        {
+            timer += Time.deltaTime;
+            groundedPlayer = IsGrounded();
+            Gravity();
+            Movement();
+            if (Input.GetButtonDown("Jump") && groundedPlayer)
+            {
+                Jump();
+            }
+
+            // change current equiped item
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                if (currentItem == equipableItems[1])
+                    equipableItems[1].Sheath();
+                equipableItems[0].Draw();
+
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                if (currentItem == equipableItems[0])
+                    equipableItems[0].Sheath();
+                equipableItems[1].Draw();
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                if (currentItem == equipableItems[0])
+                    equipableItems[0].Sheath();
+                equipableItems[1].Sheath();
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                if (timer > timePerAttack)
+                {
+                    if (currentItem != null)
+                        currentItem.Attack();
+                    timer = 0;
+                }
+
+            }
+        }
+
     }
 
     void EquipGun()
@@ -140,9 +152,7 @@ public class PlayerController : Character
 
     void Movement()
     {
-        bool isRunning = false;
-        bool isMoving;
-        bool canRun = true;
+
         if (stamina <= 0)
         {
             canRun = false;
@@ -201,23 +211,34 @@ public class PlayerController : Character
                 moveSpeed -= acceleration;
         }
 
-
+        //Block while sword drawn
+        if(currentItem == equipableItems[1])
+        {
+            if (Input.GetKey(KeyCode.Mouse1))
+            {
+                isBlocking = true;
+            }
+            else isBlocking = false;
+        }
         controller.Move(move.normalized * Time.deltaTime * moveSpeed);
         anim.SetBool("Idle", !isMoving);
         anim.SetFloat("Speed", (int)(Input.GetAxis("Vertical") * moveSpeed));
         anim.SetFloat("Strafe", Input.GetAxis("Horizontal"));
         anim.SetBool("Grounded", groundedPlayer);
+        anim.SetBool("IsBlocking", isBlocking);
 
     }
 
     void Jump()
     {
-        if (stamina > 20)
+        if (stamina > jumpCost)
         {
             anim.ResetTrigger("Jump");
             anim.SetTrigger("Jump");
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-            stamina -= 20;
+            stamina -= jumpCost;
+            audio.clip = clips[4];
+            audio.Play();
         }
     }
 
@@ -250,21 +271,29 @@ public class PlayerController : Character
 
     void Attack()
     {
-        if(stamina > attackCost)
+        if (stamina > attackCost)
         {
             currentItem.Attack();
+            stamina -= attackCost;
+            audio.clip = clips[5];
+            audio.Play();
         }
     }
 
-    void Block()
+    public override void TakeHit(float damage)
     {
-        if(stamina > blockCost)
+        if(isBlocking)
         {
-            //do stuff
+            anim.ResetTrigger("TakeHit");
+            anim.SetTrigger("TakeHit");
+            audio.clip = clips[1];
+            audio.Play();
         }
-    }
-    void TakeHit()
-    {
-
+        else
+        {
+            health -= damage;
+            audio.clip = clips[3];
+            audio.Play();
+        }
     }
 }
