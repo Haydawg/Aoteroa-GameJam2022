@@ -99,7 +99,7 @@ MonoBehaviour:
   mesh: {fileID: 5642964283412144486}
   parent: {fileID: 3131141792211330692}
   portalReady: 0
-  portalPrefab: {fileID: 8204741262276422023, guid: cd438a9f4e365c94e81cada305b1fea3, type: 3}
+  portalPrefab: {fileID: 5718243398882807702, guid: 30216134a16ff8f4984dc31b4bdf5d87, type: 3}
 --- !u!1 &3131141792211330692
 GameObject:
   m_ObjectHideFlags: 0
