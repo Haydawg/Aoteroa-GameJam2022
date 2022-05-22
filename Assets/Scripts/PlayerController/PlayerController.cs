@@ -58,6 +58,10 @@ public class PlayerController : Character
     bool canRun = true;
     bool isBlocking = false;
 
+    private AudioSource audio;
+    [SerializeField]
+    AudioClip[] clips;
+
     private void Awake()
     {
         GameObject.DontDestroyOnLoad(this.gameObject);
@@ -69,7 +73,7 @@ public class PlayerController : Character
         controller = GetComponent<CharacterController>();
         camera = FindObjectOfType<Camera>();
         distToGround = controller.bounds.extents.y;
-
+        audio = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -233,6 +237,8 @@ public class PlayerController : Character
             anim.SetTrigger("Jump");
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
             stamina -= jumpCost;
+            audio.clip = clips[4];
+            audio.Play();
         }
     }
 
@@ -269,6 +275,8 @@ public class PlayerController : Character
         {
             currentItem.Attack();
             stamina -= attackCost;
+            audio.clip = clips[5];
+            audio.Play();
         }
     }
 
@@ -278,10 +286,14 @@ public class PlayerController : Character
         {
             anim.ResetTrigger("TakeHit");
             anim.SetTrigger("TakeHit");
+            audio.clip = clips[1];
+            audio.Play();
         }
         else
         {
             health -= damage;
+            audio.clip = clips[3];
+            audio.Play();
         }
     }
 }
